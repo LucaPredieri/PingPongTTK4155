@@ -17,15 +17,12 @@
 #include <avr/sleep.h>
 #include <util/delay.h>
 
-
-
-
 #ifndef F_CPU
 #define F_CPU 4915200UL
 #endif
 
 void uart_init(unsigned int baud){
-	int bd = 0.15*((long)F_CPU/((long)(16*baud)) -1);
+	int bd = 31;
 	//set baud rate
 	UBRR0H = (bd>>8);
 	UBRR0L = bd;
@@ -57,10 +54,10 @@ int uart_receive(){
 int main(){
 	uart_init(9600);
 	while(1){
-		char data = 'c';
+		char data = 'd';
 		uart_transmit(data);
 		int out = uart_receive();
-		printf("%d\n" , out);
+		printf("%c" , (char)out);
 	}
 	/*int out= 10;
 	printf("%d\n" , out );
