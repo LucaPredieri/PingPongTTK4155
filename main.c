@@ -11,8 +11,13 @@
 
 */ 
 #include <stdint.h>
+#include <stdio.h>
 #include "Uart_driver.h"
 #include <avr/io.h>
+#include <avr/sleep.h>
+#include <util/delay.h>
+
+
 
 
 #ifndef F_CPU
@@ -27,14 +32,13 @@ void uart_init(unsigned int baud){
 	//Enable r/t
 	UCSR0B = (1<<RXEN0) | (1<<TXEN0);
 	//set frame format
-	UCSR0C = (1<<USBS0) | (1<<URSEL0) | (0<<UCSZ10) | (3<<UCSZ00);
-
+	UCSR0C = (1<<USBS0) | (1<<URSEL0) | (3<<UCSZ00);
 	fdevopen(uart_transmit,uart_receive);
 }
 
 int uart_transmit(char data){
 	while(!(UCSR0A & (1<<UDRE0))){
-		//Mens flagget er av
+		//While the flag is off
 	}
 	//send message
 	UDR0 = data;
@@ -48,9 +52,23 @@ int uart_receive(){
 	}
 	return UDR0;
 }
+
 	
 int main(){
+	uart_init(9600);
 	while(1){
-		
+		char data = 'c';
+		uart_transmit(data);
+		int out = uart_receive();
+		printf("%d\n" , out);
 	}
+	/*int out= 10;
+	printf("%d\n" , out );
+	
+	while(1){
+		PORTB |= (1 << PB0);
+		_delay_ms(10);
+		PORTB &= ~(1 << PB0);
+		_delay_ms(10);
+	}*/
 }
