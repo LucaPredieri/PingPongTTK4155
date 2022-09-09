@@ -6,6 +6,9 @@
 #include "Uart_driver.h"
 #include <avr/io.h>
 #include <avr/sleep.h>
+#include <util/delay.h>
+
+#define BASE_ADDRESS 0x1800;
 
 // this function is called by printf as a stream handler
 int usart_putchar_printf(char var, FILE *stream) {
@@ -13,6 +16,21 @@ int usart_putchar_printf(char var, FILE *stream) {
     if (var == '\n') usart_putchar('\r');
     usart_putchar(var);
     return 0;
+}
+
+void xmem_init ( void ){
+	MCUCR |= (1 << SRE ); // enable XMEM
+	SFIOR |= (1 << XMM2 ); // mask unused bits
+}
+
+void xmem_write ( uint8_t data , uint16_t addr ){
+	volatile char * ext_mem = ( char *) BASE_ADDRESS ;
+	ext_mem [ addr ]= data ;
+}
+uint8_t xmem_read ( uint16_t addr ){
+	volatile char * ext_mem = ( char *) BASE_ADDRESS ;
+	uint8_t ret_val = ext_mem [ addr ];
+	return ret_val ;
 }
 
 void usart_putchar(char data) {
@@ -95,15 +113,29 @@ int uart_receive(){
 }
 
 int main(){
+	
 	uart_init(9600);
 	stdout = &mystdout;
+	xmem_init();
 	SRAM_test();
 	/*while(1){
+		PORTA |= (1 << PA0);
+		_delay_ms(10);
+		PORTA &= ~(1 << PA0);
+		_delay_ms(10);
+		PORTA |= (1 << PA1);
+		_delay_ms(10);
+		PORTA &= ~(1 << PA1);
+		_delay_ms(10);
+	}
+
+	SRAM_test();
+	while(1){
 		printf("ciao\n");
-	}/*
+	}
 	
 	
-	/* while(1){
+	while(1){
 		char data [] = "ciao";
 		uart_transmit(data);
 		int out = uart_receive();
