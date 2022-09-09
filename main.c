@@ -91,19 +91,7 @@ void uart_init(unsigned int baud){
 	fdevopen(usart_putchar_printf,uart_receive);
 }
 
-/*
-int uart_transmit(char * data){
-	
-	for (int i=0;i<strlen(data);i++){
-		while(!(UCSR0A & (1<<UDRE0))){
-			//While the flag is off
-		}
-		//send message
-		UDR0 = data[i];
-	}
-	return 0;
-}
-*/
+
 
 int uart_receive(){
 	if(!(UCSR0A & (1<<RXC0))){
@@ -117,7 +105,33 @@ int main(){
 	uart_init(9600);
 	stdout = &mystdout;
 	xmem_init();
-	SRAM_test();
+	uint8_t data=1;
+	uint16_t addre1=0;
+	uint16_t addre2=0;
+	uint16_t seed;
+	while (1) {
+		//seed= rand();
+		 // Write phase: Immediately check that the correct value was stored
+		//srand(seed);
+		data=1;
+		addre1=0;
+		xmem_write(data,addre1);
+		_delay_ms(500);
+		data=3;
+		addre2=0x100;
+		xmem_write(data,addre2);
+		
+		_delay_ms(500);
+		
+		printf("data: %02X, addr: %04X\n", xmem_read(addre1),addre1);
+
+		printf("data: %02X, addr: %04X\n", xmem_read(addre2),addre2);
+		
+		
+	}
+	
+	
+	// SRAM_test();
 	/*while(1){
 		PORTA |= (1 << PA0);
 		_delay_ms(10);
@@ -151,3 +165,17 @@ int main(){
 		_delay_ms(10);
 	}*/
 }
+
+/*
+int uart_transmit(char * data){
+	
+	for (int i=0;i<strlen(data);i++){
+		while(!(UCSR0A & (1<<UDRE0))){
+			//While the flag is off
+		}
+		//send message
+		UDR0 = data[i];
+	}
+	return 0;
+}
+*/
