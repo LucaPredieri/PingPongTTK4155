@@ -109,7 +109,7 @@ int main(){
 	uint16_t addre1=0;
 	uint16_t addre2=0;
 	uint16_t seed;
-	while (1) {
+	/*while (1) {
 		//seed= rand();
 		 // Write phase: Immediately check that the correct value was stored
 		//srand(seed);
@@ -128,10 +128,10 @@ int main(){
 		printf("data: %02X, addr: %04X\n", xmem_read(addre2),addre2);
 		
 		
-	}
+	}*/
 	
 	
-	// SRAM_test();
+	 SRAM_test();
 	/*while(1){
 		PORTA |= (1 << PA0);
 		_delay_ms(10);
@@ -141,6 +141,47 @@ int main(){
 		_delay_ms(10);
 		PORTA &= ~(1 << PA1);
 		_delay_ms(10);
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 	}
 
 	SRAM_test();
