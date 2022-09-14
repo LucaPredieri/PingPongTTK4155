@@ -8,7 +8,9 @@
 #include <avr/sleep.h>
 #include <util/delay.h>
 
-#define BASE_ADDRESS 0x1800;
+#define BASE_ADDRESS_OLED 0x1000
+#define BASE_ADDRESS_ADC 0x1400
+#define BASE_ADDRESS_SRAM 0x1800
 
 // this function is called by printf as a stream handler
 int usart_putchar_printf(char var, FILE *stream) {
@@ -23,12 +25,12 @@ void xmem_init ( void ){
 	SFIOR |= (1 << XMM2 ); // mask unused bits
 }
 
-void xmem_write ( uint8_t data , uint16_t addr ){
-	volatile char * ext_mem = ( char *) BASE_ADDRESS ;
+void xmem_write ( uint8_t data , uint16_t addr, uint16_t base){
+	volatile char * ext_mem = ( char *) base ;
 	ext_mem [ addr ]= data ;
 }
-uint8_t xmem_read ( uint16_t addr ){
-	volatile char * ext_mem = ( char *) BASE_ADDRESS ;
+uint8_t xmem_read ( uint16_t addr, uint16_t base ){
+	volatile char * ext_mem = ( char *) base;
 	uint8_t ret_val = ext_mem [ addr ];
 	return ret_val ;
 }
@@ -40,6 +42,13 @@ void usart_putchar(char data) {
 		}
 		//send message
 		UDR0 = data;
+}
+
+void PWM_init(){
+	DDRD |= (1 << DDD4 );
+	TCCR3A |= (0 << WGM31) | (0 << WGM30) | (1 << COM3A0);
+	TCCR3B |= (0 << WGM33) | (1 << WGM32) | (0 << CS32) | (0 << CS31) | (1 << CS30) ;
+	OCR3A = 1;
 }
 
 static FILE mystdout = FDEV_SETUP_STREAM(usart_putchar_printf, NULL, _FDEV_SETUP_WRITE);
@@ -91,8 +100,6 @@ void uart_init(unsigned int baud){
 	fdevopen(usart_putchar_printf,uart_receive);
 }
 
-
-
 int uart_receive(){
 	if(!(UCSR0A & (1<<RXC0))){
 		return 0;
@@ -101,87 +108,37 @@ int uart_receive(){
 }
 
 int main(){
-	
 	uart_init(9600);
 	stdout = &mystdout;
 	xmem_init();
-	uint8_t data=1;
+	uint8_t data=154;
 	uint16_t addre1=0;
 	uint16_t addre2=0;
 	uint16_t seed;
-	/*while (1) {
-		//seed= rand();
-		 // Write phase: Immediately check that the correct value was stored
-		//srand(seed);
-		data=1;
-		addre1=0;
-		xmem_write(data,addre1);
-		_delay_ms(500);
-		data=3;
-		addre2=0x100;
-		xmem_write(data,addre2);
+	addre1=0;
+	printf("///////////////\n");
+	PWM_init();
+	while(1){
+		printf("data: %d \n", xmem_read(0,BASE_ADDRESS_ADC));
+	}
+}
+	
+	
+	
 		
-		_delay_ms(500);
 		
-		printf("data: %02X, addr: %04X\n", xmem_read(addre1),addre1);
+		
+		
+		
+		
+		
 
-		printf("data: %02X, addr: %04X\n", xmem_read(addre2),addre2);
-		
-		
-	}*/
-	
-	
-	 SRAM_test();
-	/*while(1){
-		PORTA |= (1 << PA0);
-		_delay_ms(10);
-		PORTA &= ~(1 << PA0);
-		_delay_ms(10);
-		PORTA |= (1 << PA1);
-		_delay_ms(10);
-		PORTA &= ~(1 << PA1);
-		_delay_ms(10);
 		
 		
 		
 		
 		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
+	/*	
 	}
 
 	SRAM_test();
@@ -205,7 +162,7 @@ int main(){
 		PORTB &= ~(1 << PB0);
 		_delay_ms(10);
 	}*/
-}
+
 
 /*
 int uart_transmit(char * data){
@@ -220,3 +177,30 @@ int uart_transmit(char * data){
 	return 0;
 }
 */
+
+/*while (1) {
+		//seed= rand();
+		 // Write phase: Immediately check that the correct value was stored
+		//srand(seed);
+		for (uint8_t i=0;i<500;i++){
+			data=i;
+			xmem_write(data,addre1);
+			printf("data: %02X, addr: %04X, i= %02X\n", xmem_read(addre1),addre1,i);
+		}
+		
+		
+	
+		//_delay_ms(500);
+		
+		//data=5;
+		addre2=1879;
+		xmem_write(data,addre2);
+		
+		//_delay_ms(500);
+		
+		
+
+		//printf("data: %02X, addr: %04X\n", xmem_read(addre2),addre2);
+		
+		
+	}*/
