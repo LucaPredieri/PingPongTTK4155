@@ -11,6 +11,7 @@
 #define BASE_ADDRESS_OLED 0x1000
 #define BASE_ADDRESS_ADC 0x1400
 #define BASE_ADDRESS_SRAM 0x1800
+#define SINGLE_CHANNEL_SAMPLE 7
 
 // this function is called by printf as a stream handler
 int usart_putchar_printf(char var, FILE *stream) {
@@ -28,7 +29,7 @@ void xmem_init ( void ){
 void xmem_write ( uint8_t data , uint16_t addr, uint16_t base){
 	volatile char * ext_mem = ( char *) base ;
 	ext_mem [ addr ]= data ;
-}
+}
 uint8_t xmem_read ( uint16_t addr, uint16_t base ){
 	volatile char * ext_mem = ( char *) base;
 	uint8_t ret_val = ext_mem [ addr ];
@@ -48,7 +49,7 @@ void PWM_init(){
 	DDRD |= (1 << DDD4 );
 	TCCR3A |= (0 << WGM31) | (0 << WGM30) | (1 << COM3A0);
 	TCCR3B |= (0 << WGM33) | (1 << WGM32) | (0 << CS32) | (0 << CS31) | (1 << CS30) ;
-	OCR3A = 1;
+	OCR3A = 0;
 }
 
 static FILE mystdout = FDEV_SETUP_STREAM(usart_putchar_printf, NULL, _FDEV_SETUP_WRITE);
@@ -111,96 +112,20 @@ int main(){
 	uart_init(9600);
 	stdout = &mystdout;
 	xmem_init();
+	PWM_init();
 	uint8_t data=154;
-	uint16_t addre1=0;
+	uint16_t addre1=0x01;
 	uint16_t addre2=0;
 	uint16_t seed;
 	addre1=0;
 	printf("///////////////\n");
-	PWM_init();
 	while(1){
-		printf("data: %d \n", xmem_read(0,BASE_ADDRESS_ADC));
+		uint8_t adc_mode = (1 << SINGLE_CHANNEL_SAMPLE) | (0);
+
+		xmem_write(adc_mode, 0x01, BASE_ADDRESS_ADC);
+		_delay_us(5000);
+		uint8_t value1 = xmem_read(0x00, BASE_ADDRESS_ADC);
+		uint8_t value2 = xmem_read(0x00, BASE_ADDRESS_ADC);
+		printf("value1 = %d value2 = %d \n ", value1, value2);
 	}
 }
-	
-	
-	
-		
-		
-		
-		
-		
-		
-		
-
-		
-		
-		
-		
-		
-	/*	
-	}
-
-	SRAM_test();
-	while(1){
-		printf("ciao\n");
-	}
-	
-	
-	while(1){
-		char data [] = "ciao";
-		uart_transmit(data);
-		int out = uart_receive();
-		printf("%c" , out);
-	}
-	int out= 10;
-	printf("%d\n" , out );
-	
-	while(1){
-		PORTB |= (1 << PB0);
-		_delay_ms(10);
-		PORTB &= ~(1 << PB0);
-		_delay_ms(10);
-	}*/
-
-
-/*
-int uart_transmit(char * data){
-	
-	for (int i=0;i<strlen(data);i++){
-		while(!(UCSR0A & (1<<UDRE0))){
-			//While the flag is off
-		}
-		//send message
-		UDR0 = data[i];
-	}
-	return 0;
-}
-*/
-
-/*while (1) {
-		//seed= rand();
-		 // Write phase: Immediately check that the correct value was stored
-		//srand(seed);
-		for (uint8_t i=0;i<500;i++){
-			data=i;
-			xmem_write(data,addre1);
-			printf("data: %02X, addr: %04X, i= %02X\n", xmem_read(addre1),addre1,i);
-		}
-		
-		
-	
-		//_delay_ms(500);
-		
-		//data=5;
-		addre2=1879;
-		xmem_write(data,addre2);
-		
-		//_delay_ms(500);
-		
-		
-
-		//printf("data: %02X, addr: %04X\n", xmem_read(addre2),addre2);
-		
-		
-	}*/
