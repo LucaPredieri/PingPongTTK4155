@@ -8,7 +8,6 @@
 #include <avr/sleep.h>
 #include <util/delay.h>
 
-#define BASE_ADDRESS_OLED 0x1000
 #define BASE_ADDRESS_ADC 0x1400
 #define BASE_ADDRESS_SRAM 0x1800
 #define SINGLE_CHANNEL_SAMPLE 7

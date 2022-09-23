@@ -15,3 +15,7 @@ void PWM_init(){
 	OCR3A = 0;
 }
 
+void ADC_init_read(){
+	uint8_t adc_mode = (1 << SINGLE_CHANNEL_SAMPLE) | (0);
+	xmem_write(adc_mode, 0x01, BASE_ADDRESS_ADC);
+}
