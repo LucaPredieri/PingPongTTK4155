@@ -23,8 +23,12 @@ int main(){
 	PWM_init();
 	OLED_init();
 	OLED_clear();
-	GUI_main_menu_init();
-	
+	//OLED_clear_arrow();
+	GUI_menu_init();
+	while (1){
+		menu_navigation();
+		_delay_ms(1000);
+	}
 }
 
 
