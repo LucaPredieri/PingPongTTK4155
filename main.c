@@ -25,6 +25,7 @@ int main(){
 	OLED_clear();
 	//OLED_clear_arrow();
 	GUI_menu_init();
+	DDRB = 0x00;
 	while (1){
 		menu_navigation();
 		_delay_ms(1000);
@@ -50,7 +51,6 @@ printf("xjoy= %d%% yjoy= %d%% left= %d%% right = %d%% \n",joystick.x_pos, joysti
 printf("Current joystick's direction: %s, %s\n",joystick.x_currdir,joystick.y_currdir);
 */
 
-	// DDRB = 0x00;
-	//value = PINB;
+
 
 

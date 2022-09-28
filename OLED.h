@@ -88,7 +88,6 @@ void OLED_clear(){
 }
 
 void OLED_clear_arrow(){
-	
 	for(uint8_t i=2;i<6;i++){
 		OLED_goto_pos(i,0);
 		for(uint8_t j=0;j<21;j++){
@@ -97,14 +96,7 @@ void OLED_clear_arrow(){
 	}
 }
 
-void OLED_clear_menu(){
-	for(uint8_t i=2; i<6; i++){
-		OLED_goto_pos(i,0);
-		for(uint8_t j=22;j<128;j++){
-			OLED_write_data(0x00);
-		}
-	}
-}
+
 
 void OLED_print_arrow(uint8_t row, uint8_t col){
 	
