@@ -124,6 +124,4 @@ void OLED_print_string(const char * str){
 		 OLED_print_char(str[i]);
 		 i++; 
 	 }
-	
-	
 }

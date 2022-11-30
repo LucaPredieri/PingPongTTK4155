@@ -1,14 +1,19 @@
 #include <stdlib.h>
-#include <stdlib.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
 #include <avr/io.h>
-#include "Uart_driver.h"
 #include <avr/sleep.h>
 #include <util/delay.h>
 
 // Functions to handle printf.
+
+int uart_receive(){
+	if(!(UCSR0A & (1<<RXC0))){
+		return 0;
+	}
+	return UDR0;
+}
 
 int usart_putchar_printf(char var, FILE *stream) {
 	// translate \n to \r for br@y++ terminal
@@ -40,9 +45,3 @@ void uart_init(unsigned int baud){
 	fdevopen(usart_putchar_printf,uart_receive);
 }
 
-int uart_receive(){
-	if(!(UCSR0A & (1<<RXC0))){
-		return 0;
-	}
-	return UDR0;
-}

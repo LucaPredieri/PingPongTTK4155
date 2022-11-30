@@ -1,9 +1,7 @@
 #include <stdlib.h>
-#include <stdlib.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
-#include "Uart_driver.h"
 #include <avr/io.h>
 #include <avr/sleep.h>
 #include <util/delay.h>
